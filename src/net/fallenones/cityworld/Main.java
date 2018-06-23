@@ -4,7 +4,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.fallenones.command.CommandHandler;
+import net.fallenones.command.CityWorldCommandHandler;
+import net.fallenones.command.ResidenceCommandHandler;
 import net.fallenones.commands.CityWorldCmd;
 import net.fallenones.commands.ClaimCmd;
 import net.fallenones.commands.CreateCmd;
@@ -49,7 +50,9 @@ public class Main extends JavaPlugin implements Listener
 		else
 		{
 			weHandler = new WorldEditHandler(getWorldEdit());
-		}	
+		}
+		
+		// register plugin commands
 		this.registerCommands();
     }
 	
@@ -92,25 +95,28 @@ public class Main extends JavaPlugin implements Listener
 	public void registerCommands() 
     {
     	//For convenience' sake, we will initialize a variable.
-        CommandHandler handler = new CommandHandler();
+        CityWorldCommandHandler cwhandler = new CityWorldCommandHandler();
+        ResidenceCommandHandler reshandler = new ResidenceCommandHandler();
         
         //Register /cityworld base command
-        handler.register("cityworld", new CityWorldCmd());
+        cwhandler.register("cityworld", new CityWorldCmd());
         
-      //Register /residence base command
-        handler.register("res", new ResCmd());
+        //Register /residence base command
+        reshandler.register("res", new ResCmd());
         
-        //Register /cityworld res [command]
-        handler.register("claim", new ClaimCmd());
-        handler.register("unclaim", new UnclaimCmd());
-        handler.register("create", new CreateCmd());
-        handler.register("createspawn", new CreateSpawnCmd());
-        handler.register("list", new ResListCmd());
-        handler.register("removeallregions", new RemoveAllRegionsCmd());
-        handler.register("removeallresidences", new RemoveAllResidencesCmd());
-        handler.register("setup", new SetCityWorldCmd());
+        //Register /cityworld [command]
+        cwhandler.register("setup", new SetCityWorldCmd());
         
-        getCommand("cityworld").setExecutor(handler);
-        getCommand("res").setExecutor(handler);
+        //Register /res [command]
+        reshandler.register("claim", new ClaimCmd());
+        reshandler.register("unclaim", new UnclaimCmd());
+        reshandler.register("create", new CreateCmd());
+        reshandler.register("createspawn", new CreateSpawnCmd());
+        reshandler.register("list", new ResListCmd());
+        reshandler.register("removeallregions", new RemoveAllRegionsCmd());
+        reshandler.register("removeallresidences", new RemoveAllResidencesCmd());
+        
+        getCommand("cityworld").setExecutor(cwhandler);
+        getCommand("res").setExecutor(reshandler);
     }
 }
