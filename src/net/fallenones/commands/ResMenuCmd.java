@@ -32,10 +32,15 @@ public class ResMenuCmd implements CommandInterface
 		                event.getPlayer().sendMessage("You have chosen " + event.getName());
 		                event.setWillDestroy(true);
 		            }
-			 }, plugin)
-		        .setOption(0, new ItemStack(Material.GRASS, 1), "Claim", "res claim", "Claim the next availabe residence!")
-		        .setOption(1, new ItemStack(Material.ROTTEN_FLESH, 1), "Unclaim", "res unclaim", "Unclaim your residence! ")
-		        .setOption(2, new ItemStack(Material.EMERALD, 1), "Money", "", "Money brings happiness");
+			 }, plugin);
+			
+			resmenu.setOption(0, new ItemStack(Material.GRASS, 1), "Claim", "res claim", "Claim the next availabe residence!");
+			resmenu.setOption(1, new ItemStack(Material.ROTTEN_FLESH, 1), "Unclaim", "res unclaim", "Unclaim your residence! ");
+			resmenu.setOption(2, new ItemStack(Material.EMERALD, 1), "Money", "", "Money brings happiness");
+			
+		        //.setOption(0, new ItemStack(Material.GRASS, 1), "Claim", "res claim", "Claim the next availabe residence!")
+		        //.setOption(1, new ItemStack(Material.ROTTEN_FLESH, 1), "Unclaim", "res unclaim", "Unclaim your residence! ")
+		        //.setOption(2, new ItemStack(Material.EMERALD, 1), "Money", "", "Money brings happiness");
 			
 			resmenu.open(p);
 			return true;

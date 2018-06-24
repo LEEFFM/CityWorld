@@ -42,8 +42,6 @@ public class WorldGuardHandler
 {
 	private WorldGuardPlugin wg;
 	private WorldEditHandler weHandler;
-	
-	private boolean bSpawnArea;
 
     public WorldGuardHandler(WorldGuardPlugin wg)
     {
@@ -194,7 +192,7 @@ public class WorldGuardHandler
     	return new BlockVector(location.getX(),location.getY(),location.getZ());
 	}
     
-    private void setClaimable(String regionName, boolean SpawnArea)
+    /*private void setClaimable(String regionName, boolean SpawnArea)
     {
     	File resFile = new File("plugins/CityWorld/Residences.yml");;
     	
@@ -212,7 +210,7 @@ public class WorldGuardHandler
         {
             e.printStackTrace();
         }
-	}
+	}*/
     
     public void create (CommandSender sender, String regionName)
     {
@@ -226,7 +224,7 @@ public class WorldGuardHandler
     	BlockVector BV1;
     	BlockVector BV2;
     	
-    	bSpawnArea = false;
+    	//boolean bSpawnArea = false;
     	
     	weHandler = Main.getWeHandler();
     	if (RegionExsists(sender,regionName)) return;
@@ -248,7 +246,7 @@ public class WorldGuardHandler
     	
     	resetResFlags(sender,regionName);
     	
-    	setClaimable (regionName,bSpawnArea);
+    	//setClaimable (regionName,bSpawnArea);
     	
     	player.sendMessage("You have created " + regionName + "!");
     }
@@ -276,7 +274,10 @@ public class WorldGuardHandler
             e.printStackTrace();
         }
 		
-		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ build -w " + player.getWorld().getName() + " deny");   	
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ build -w " + player.getWorld().getName() + " deny");
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ fall-damage -w " + player.getWorld().getName() + " deny"); 
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ mob-spawning -w " + player.getWorld().getName() + " deny"); 
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ pvp -w " + player.getWorld().getName() + " deny"); 
     }
     
     public void createSpawn (CommandSender sender, String regionName)
@@ -291,7 +292,7 @@ public class WorldGuardHandler
     	BlockVector BV1;
     	BlockVector BV2;
     	
-    	bSpawnArea = true;
+    	//boolean bSpawnArea = true;
     	
     	weHandler = Main.getWeHandler();
     	if (RegionExsists(sender,regionName)) return;
@@ -313,7 +314,7 @@ public class WorldGuardHandler
     	
     	setSpawnAreaFlags(sender,regionName);
     	
-    	setClaimable (regionName,bSpawnArea);
+    	//setClaimable (regionName,bSpawnArea);
     	
     	player.sendMessage("You have created " + regionName + "!");
     }
@@ -325,15 +326,15 @@ public class WorldGuardHandler
     	World world = player.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
     	
-    	File resFile = new File("plugins/CityWorld/Residences.yml");;
+    	//File resFile = new File("plugins/CityWorld/Residences.yml");;
     	
-    	YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
+    	//YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
     	
     	if (regionName != null)
     	{    	
     		region = regionManager.getRegion(regionName);
     	
-    		bSpawnArea = resYml.getBoolean("residence." + regionName + ".spawnarea");
+    		//boolean bSpawnArea = resYml.getBoolean("residence." + regionName + ".spawnarea");
     	
     		if (region == null)
     		{
@@ -347,7 +348,7 @@ public class WorldGuardHandler
     		{
     			player.sendMessage(regionName + " is already owned!, You cannot claim this residence!");
     		}
-    		else if (bSpawnArea)
+    		else if (regionName.contains("__global__"))
     		{
     			player.sendMessage("You cannot claim " + regionName + " because it is a spawn area!");
     		}
@@ -368,9 +369,9 @@ public class WorldGuardHandler
     		for (Entry<String, ProtectedRegion> key : regions.entrySet())
     		{
     			region = regionManager.getRegion(key.getKey());
-    			bSpawnArea = resYml.getBoolean("residence." + key.getKey() + ".spawnarea");
+    			//boolean bSpawnArea = resYml.getBoolean("residence." + key.getKey() + ".spawnarea");
     			
-    			if (!region.hasMembersOrOwners() && !bSpawnArea)
+    			if (!region.hasMembersOrOwners() /*&&  region.*/ )
     			{
     				DefaultDomain RegionOwner = region.getOwners();
     				
