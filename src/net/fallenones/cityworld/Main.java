@@ -14,6 +14,7 @@ import net.fallenones.commands.RemoveAllRegionsCmd;
 import net.fallenones.commands.RemoveAllResidencesCmd;
 import net.fallenones.commands.ResCmd;
 import net.fallenones.commands.ResListCmd;
+import net.fallenones.commands.ResMenuCmd;
 import net.fallenones.commands.SetCityWorldCmd;
 import net.fallenones.commands.UnclaimCmd;
 
@@ -107,7 +108,7 @@ public class Main extends JavaPlugin implements Listener
         //Register /cityworld [command]
         cwhandler.register("setup", new SetCityWorldCmd());
         
-        //Register /res [command]
+        //Register /residence [command]
         reshandler.register("claim", new ClaimCmd());
         reshandler.register("unclaim", new UnclaimCmd());
         reshandler.register("create", new CreateCmd());
@@ -115,6 +116,7 @@ public class Main extends JavaPlugin implements Listener
         reshandler.register("list", new ResListCmd());
         reshandler.register("removeallregions", new RemoveAllRegionsCmd());
         reshandler.register("removeallresidences", new RemoveAllResidencesCmd());
+        reshandler.register("cp", new ResMenuCmd());
         
         getCommand("cityworld").setExecutor(cwhandler);
         getCommand("res").setExecutor(reshandler);

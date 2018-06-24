@@ -31,7 +31,21 @@ public class UnclaimCmd implements CommandInterface
 			}
 			else
 			{
-				p.sendMessage("You do not have the cityworld.res.claim permission!");
+				p.sendMessage("You do not have the cityworld.res.unclaim permission!");
+				return true;
+			}
+		}
+		else if (args.length <= 1)
+		{
+			if(p.hasPermission("cityworld.res.unclaim"))
+			{
+				wgHandler = Main.getWgHandler();
+				wgHandler.unclaim(sender, null);
+				return true;
+			}
+			else
+			{
+				p.sendMessage("You do not have the cityworld.res.unclaim permission!");
 				return true;
 			}
 		}

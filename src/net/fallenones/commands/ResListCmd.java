@@ -31,7 +31,5 @@ public class ResListCmd implements CommandInterface
 			p.sendMessage("You do not have the cityworld.res.list permission!");
 			return true;
 		}
-		//return false;
 	}
-
 }

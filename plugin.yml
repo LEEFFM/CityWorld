@@ -26,22 +26,25 @@ commands:
         cityworld.res.create: true
         cityworld.res.list: true
         cityworld.res.removeallregions: true
-        cityworld.res.removeallresidences: true        
+        cityworld.res.removeallresidences: true  
+        cityworld.res.cp: true      
     cityworld.res.claim:
       description: Claim's a unowned private residence!
       default: op
-  cityworld.res.unclaim:
+    cityworld.res.unclaim:
       description: Unclaim's a private residence owned by you!
       default: op
-  cityworld.res.create:
+    cityworld.res.create:
       description: create's a claimable private residence!
       default: op
-  cityworld.res.list:
+    cityworld.res.list:
       description: shows a list of private residence's!
       default: op
-  cityworld.res.removeallregions:
+    cityworld.res.removeallregions:
       description: deletes all regions in a world!
       default: op
-  cityworld.res.removeallresidences:
+    cityworld.res.removeallresidences:
       description: deletes all residences in a world!
       default: op
+    cityworld.res.cp:
+      description: pulls up residence control panel!

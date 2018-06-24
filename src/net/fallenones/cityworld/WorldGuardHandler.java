@@ -3,6 +3,8 @@ package net.fallenones.cityworld;
 import java.io.File;
 //import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 //import java.util.ArrayList;
 //import java.util.ArrayList;
 //import java.util.ArrayList;
@@ -155,6 +157,21 @@ public class WorldGuardHandler
     	region.setFlag (DefaultFlag.FALL_DAMAGE, null);
     }
     
+    public void setSpawnAreaFlags (CommandSender sender, String regionName)
+    {
+    	ProtectedRegion region;
+    	Player player = (Player)sender;
+    	World world = player.getWorld();
+    	RegionManager regionManager = wg.getRegionManager(world);
+    	
+    	region = regionManager.getRegion(regionName);
+    	
+    	region.setFlag (DefaultFlag.BUILD, State.DENY);
+    	region.setFlag (DefaultFlag.INTERACT, State.ALLOW);
+    	region.setFlag (DefaultFlag.MOB_SPAWNING, State.DENY);
+    	region.setFlag (DefaultFlag.FALL_DAMAGE, State.DENY);
+    }
+    
     public boolean RegionExsists (CommandSender sender, String regionName)
     {
     	ProtectedRegion region;
@@ -236,7 +253,6 @@ public class WorldGuardHandler
     	player.sendMessage("You have created " + regionName + "!");
     }
     
-    // TODO: TEST THIS
     public void setCityWorld (CommandSender sender)
     {
     	Player player = (Player)sender;
@@ -295,7 +311,7 @@ public class WorldGuardHandler
     	
     	regionManager.addRegion(region);
     	
-    	resetResFlags(sender,regionName);
+    	setSpawnAreaFlags(sender,regionName);
     	
     	setClaimable (regionName,bSpawnArea);
     	
@@ -313,34 +329,60 @@ public class WorldGuardHandler
     	
     	YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
     	
-    	region = regionManager.getRegion(regionName);
+    	if (regionName != null)
+    	{    	
+    		region = regionManager.getRegion(regionName);
     	
-    	bSpawnArea = resYml.getBoolean("residence." + regionName + ".spawnarea");
+    		bSpawnArea = resYml.getBoolean("residence." + regionName + ".spawnarea");
     	
-    	if (region == null)
-    	{
-    		player.sendMessage(regionName + " Doesnt exsist!");
-    		return;
-    	}
+    		if (region == null)
+    		{
+    			player.sendMessage(regionName + " Doesnt exsist!");
+    			return;
+    		}
     	
-    	DefaultDomain RegionOwner = region.getOwners();
+    		DefaultDomain RegionOwner = region.getOwners();
     	
-    	if (region.hasMembersOrOwners())
-    	{
-    		player.sendMessage(regionName + " is already owned!, You cannot claim this residence!");
-    	}
-    	else if (bSpawnArea)
-    	{
-    		player.sendMessage("You cannot claim " + regionName + " because it is a spawn area!");
+    		if (region.hasMembersOrOwners())
+    		{
+    			player.sendMessage(regionName + " is already owned!, You cannot claim this residence!");
+    		}
+    		else if (bSpawnArea)
+    		{
+    			player.sendMessage("You cannot claim " + regionName + " because it is a spawn area!");
+    		}
+    		else
+    		{
+    			RegionOwner.addPlayer(player.getName());
+
+    			region.setOwners(RegionOwner);
+    			setDefaultResFlags(sender,regionName);
+    		
+    			player.sendMessage("You are now the owner of " + regionName + "!");
+    		}
     	}
     	else
     	{
-    		RegionOwner.addPlayer(player.getName());
-
-    		region.setOwners(RegionOwner);
-    		setDefaultResFlags(sender,regionName);
+    		Map<String, ProtectedRegion> regions = regionManager.getRegions();
     		
-    		player.sendMessage("You are now the owner of " + regionName + "!");
+    		for (Entry<String, ProtectedRegion> key : regions.entrySet())
+    		{
+    			region = regionManager.getRegion(key.getKey());
+    			bSpawnArea = resYml.getBoolean("residence." + key.getKey() + ".spawnarea");
+    			
+    			if (!region.hasMembersOrOwners() && !bSpawnArea)
+    			{
+    				DefaultDomain RegionOwner = region.getOwners();
+    				
+    				RegionOwner.addPlayer(player.getName());
+
+        			region.setOwners(RegionOwner);
+        			setDefaultResFlags(sender,key.getKey());
+        		
+        			player.sendMessage("You are now the owner of " + key.getKey() + "!");
+        			return;
+    			}
+    		}
     	}
     }
 	
@@ -421,29 +463,52 @@ public class WorldGuardHandler
     	World world = player.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
     	
-    	region = regionManager.getRegion(regionName);
-    	
-    	if (region == null)
+    	if (regionName != null)
     	{
-    		player.sendMessage(regionName + " Doesnt exsist!");
-    		return;
-    	}
+    		region = regionManager.getRegion(regionName);
     	
-    	DefaultDomain RegionOwner = region.getOwners();
+    		if (region == null)
+    		{
+    			player.sendMessage(regionName + " Doesnt exsist!");
+    			return;
+    		}
     	
-    	//RegionOwner.toString()
-    	if (RegionOwner.contains(player.getName()))
-    	{
-    		RegionOwner.removePlayer(player.getName());
+    		DefaultDomain RegionOwner = region.getOwners();
     	
-    		region.setOwners(RegionOwner);
-    		resetResFlags(sender,regionName);
+    		//RegionOwner.toString()
+    		if (RegionOwner.contains(player.getName()))
+    		{
+    			RegionOwner.removePlayer(player.getName());
     	
-    		player.sendMessage("You are no longer the owner of " + regionName + "!");
+    			region.setOwners(RegionOwner);
+    			resetResFlags(sender,regionName);
+    	
+    			player.sendMessage("You are no longer the owner of " + regionName + "!");
+    		}
+    		else
+    		{
+    			player.sendMessage("Cant remove you as the owner of " + regionName + " because you are already not the owner!");
+    		}
     	}
     	else
     	{
-    		player.sendMessage("Cant remove you as the owner of " + regionName + " because you are already not the owner!");
+    		Map<String, ProtectedRegion> regions = regionManager.getRegions();
+    		
+    		for (Entry<String, ProtectedRegion> key : regions.entrySet())
+    		{
+    			region = regionManager.getRegion(key.getKey());
+    			DefaultDomain RegionOwner = region.getOwners();
+    			
+    			if (region.hasMembersOrOwners() && RegionOwner.contains(player.getName()))
+    			{
+    				RegionOwner.removePlayer(player.getName());
+    	        	
+        			region.setOwners(RegionOwner);
+        			resetResFlags(sender,key.getKey());
+        	
+        			player.sendMessage("You are no longer the owner of " + key.getKey() + "!");
+    			}
+    		}
     	}
     }
 }
