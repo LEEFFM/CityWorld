@@ -1,33 +1,24 @@
 package net.fallenones.cityworld;
 
 import java.io.File;
-//import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
-//import java.util.ArrayList;
-//import java.util.ArrayList;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.List;
-//import java.util.List;
-//import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-//import org.bukkit.ChatColor;
 import org.bukkit.Location;
-//import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-//import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.bukkit.selections.Selection;
-//import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -36,7 +27,8 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-//import com.sk89q.worldguard.util.profile.resolver.ProfileService;
+
+import net.fallenones.cityworld.flags.Flags;
 
 public class WorldGuardHandler
 {
@@ -53,63 +45,76 @@ public class WorldGuardHandler
         return wg;
     }
     
-    public void setDefaultResFlags (CommandSender sender, String regionName)
+    public void setDefaultResFlags (CommandSender sender, String regionName, boolean bSpawnArea)
     {
     	ProtectedRegion region;
     	Player player = (Player)sender;
     	World world = player.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
-    	
     	region = regionManager.getRegion(regionName);
     	
-    	// set flags that effect everyone here
-    	region.setFlag (DefaultFlag.GREET_MESSAGE, "You are now entering " + player.getName() + "'s residence!" );
-    	region.setFlag (DefaultFlag.FAREWELL_MESSAGE, "You are now leaving " + player.getName() + "'s residence!" );
+    	if (!bSpawnArea)
+    	{
+    		region.setFlag(Flags.Spawn_Area, false);
+    		// set flags that effect everyone here
+    		region.setFlag (DefaultFlag.GREET_MESSAGE, "You are now entering " + player.getName() + "'s residence!" );
+    		region.setFlag (DefaultFlag.FAREWELL_MESSAGE, "You are now leaving " + player.getName() + "'s residence!" );
     	
-    	region.setFlag (DefaultFlag.CREEPER_EXPLOSION, State.DENY);
-    	region.setFlag (DefaultFlag.ENDERDRAGON_BLOCK_DAMAGE, State.DENY);
-    	region.setFlag (DefaultFlag.GHAST_FIREBALL, State.DENY);
-    	region.setFlag (DefaultFlag.OTHER_EXPLOSION, State.DENY);
-    	region.setFlag (DefaultFlag.FIRE_SPREAD, State.DENY);
-    	region.setFlag (DefaultFlag.LAVA_FIRE, State.DENY);
-    	region.setFlag (DefaultFlag.LIGHTNING, State.DENY);
-    	region.setFlag (DefaultFlag.SNOW_FALL, State.ALLOW);
-    	region.setFlag (DefaultFlag.SNOW_MELT, State.ALLOW);
-    	region.setFlag (DefaultFlag.ICE_FORM, State.ALLOW);
-    	region.setFlag (DefaultFlag.ICE_MELT, State.ALLOW);
-    	region.setFlag (DefaultFlag.MUSHROOMS, State.ALLOW);
-    	region.setFlag (DefaultFlag.LEAF_DECAY, State.ALLOW);
-    	region.setFlag (DefaultFlag.GRASS_SPREAD, State.ALLOW);
-    	region.setFlag (DefaultFlag.MYCELIUM_SPREAD, State.ALLOW);
-    	region.setFlag (DefaultFlag.VINE_GROWTH, State.ALLOW);
-    	region.setFlag (DefaultFlag.SOIL_DRY, State.ALLOW);
-    	region.setFlag (DefaultFlag.ENDER_BUILD, State.DENY);
-    	region.setFlag (DefaultFlag.ENTITY_PAINTING_DESTROY, State.DENY);
-    	region.setFlag (DefaultFlag.ENTITY_ITEM_FRAME_DESTROY, State.DENY);
-    	region.setFlag (DefaultFlag.FALL_DAMAGE, State.DENY);
-    	region.setFlag (DefaultFlag.ENDERPEARL, State.DENY);
+    		region.setFlag (DefaultFlag.CREEPER_EXPLOSION, State.DENY);
+    		region.setFlag (DefaultFlag.ENDERDRAGON_BLOCK_DAMAGE, State.DENY);
+    		region.setFlag (DefaultFlag.GHAST_FIREBALL, State.DENY);
+    		region.setFlag (DefaultFlag.OTHER_EXPLOSION, State.DENY);
+    		region.setFlag (DefaultFlag.FIRE_SPREAD, State.DENY);
+    		region.setFlag (DefaultFlag.LAVA_FIRE, State.DENY);
+    		region.setFlag (DefaultFlag.LIGHTNING, State.DENY);
+    		region.setFlag (DefaultFlag.SNOW_FALL, State.ALLOW);
+    		region.setFlag (DefaultFlag.SNOW_MELT, State.ALLOW);
+    		region.setFlag (DefaultFlag.ICE_FORM, State.ALLOW);
+    		region.setFlag (DefaultFlag.ICE_MELT, State.ALLOW);
+    		region.setFlag (DefaultFlag.MUSHROOMS, State.ALLOW);
+    		region.setFlag (DefaultFlag.LEAF_DECAY, State.ALLOW);
+    		region.setFlag (DefaultFlag.GRASS_SPREAD, State.ALLOW);
+    		region.setFlag (DefaultFlag.MYCELIUM_SPREAD, State.ALLOW);
+    		region.setFlag (DefaultFlag.VINE_GROWTH, State.ALLOW);
+    		region.setFlag (DefaultFlag.SOIL_DRY, State.ALLOW);
+    		region.setFlag (DefaultFlag.ENDER_BUILD, State.DENY);
+    		region.setFlag (DefaultFlag.ENTITY_PAINTING_DESTROY, State.DENY);
+    		region.setFlag (DefaultFlag.ENTITY_ITEM_FRAME_DESTROY, State.DENY);
+    		region.setFlag (DefaultFlag.FALL_DAMAGE, State.DENY);
+    		region.setFlag (DefaultFlag.ENDERPEARL, State.DENY);
     	
-    	// set residence owner flags here
-    	region.setFlag (DefaultFlag.BUILD, State.ALLOW);
-    	region.setFlag (DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+    		// set residence owner flags here
+    		region.setFlag (DefaultFlag.BUILD, State.ALLOW);
+    		region.setFlag (DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
     	
-    	region.setFlag (DefaultFlag.WATER_FLOW, State.ALLOW);
-    	region.setFlag (DefaultFlag.WATER_FLOW.getRegionGroupFlag(), RegionGroup.OWNERS);
+    		region.setFlag (DefaultFlag.WATER_FLOW, State.ALLOW);
+    		region.setFlag (DefaultFlag.WATER_FLOW.getRegionGroupFlag(), RegionGroup.OWNERS);
     	
-    	region.setFlag (DefaultFlag.LAVA_FLOW, State.ALLOW);
-    	region.setFlag (DefaultFlag.LAVA_FLOW.getRegionGroupFlag(), RegionGroup.OWNERS);
+    		region.setFlag (DefaultFlag.LAVA_FLOW, State.ALLOW);
+    		region.setFlag (DefaultFlag.LAVA_FLOW.getRegionGroupFlag(), RegionGroup.OWNERS);
 
-    	region.setFlag (DefaultFlag.MOB_SPAWNING, State.ALLOW);
-    	region.setFlag (DefaultFlag.MOB_SPAWNING.getRegionGroupFlag(), RegionGroup.OWNERS);
+    		region.setFlag (DefaultFlag.MOB_SPAWNING, State.ALLOW);
+    		region.setFlag (DefaultFlag.MOB_SPAWNING.getRegionGroupFlag(), RegionGroup.OWNERS);
     	
-    	region.setFlag (DefaultFlag.PISTONS, State.ALLOW);
-    	region.setFlag (DefaultFlag.PISTONS.getRegionGroupFlag(), RegionGroup.OWNERS);
+    		region.setFlag (DefaultFlag.PISTONS, State.ALLOW);
+    		region.setFlag (DefaultFlag.PISTONS.getRegionGroupFlag(), RegionGroup.OWNERS);
     	
-    	region.setFlag (DefaultFlag.INVINCIBILITY, State.ALLOW);
-    	region.setFlag (DefaultFlag.INVINCIBILITY.getRegionGroupFlag(), RegionGroup.OWNERS);
+    		region.setFlag (DefaultFlag.INVINCIBILITY, State.ALLOW);
+    		region.setFlag (DefaultFlag.INVINCIBILITY.getRegionGroupFlag(), RegionGroup.OWNERS);
+    	}
+    	else if (bSpawnArea)
+    	{
+    		region.setFlag (DefaultFlag.GREET_MESSAGE, "You are now entering " + regionName + "!" );
+        	region.setFlag (DefaultFlag.FAREWELL_MESSAGE, "You are now leaving " + regionName + "!" );
+    		region.setFlag (DefaultFlag.BUILD, State.DENY);
+        	region.setFlag (DefaultFlag.INTERACT, State.ALLOW);
+        	region.setFlag (DefaultFlag.MOB_SPAWNING, State.DENY);
+        	region.setFlag (DefaultFlag.FALL_DAMAGE, State.DENY);
+        	region.setFlag(Flags.Spawn_Area, true);
+    	}
     }
     
-    public void resetResFlags (CommandSender sender, String regionName)
+    public void resetResFlags (CommandSender sender, String regionName, boolean bSpawnArea)
     {
     	ProtectedRegion region;
     	Player player = (Player)sender;
@@ -118,56 +123,55 @@ public class WorldGuardHandler
     	
     	region = regionManager.getRegion(regionName);
     	
-    	region.setFlag (DefaultFlag.BUILD, null);
-    	region.setFlag (DefaultFlag.GREET_MESSAGE, "You are now entering " + regionName + "!" );
-    	region.setFlag (DefaultFlag.FAREWELL_MESSAGE, "You are now leaving " + regionName + "!" );
-    	region.setFlag (DefaultFlag.MOB_DAMAGE, null);
-    	region.setFlag (DefaultFlag.MOB_SPAWNING, null);
-    	region.setFlag (DefaultFlag.CREEPER_EXPLOSION, null);
-    	region.setFlag (DefaultFlag.ENDERDRAGON_BLOCK_DAMAGE, null);
-    	region.setFlag (DefaultFlag.GHAST_FIREBALL, null);
-    	region.setFlag (DefaultFlag.OTHER_EXPLOSION, null);
-    	region.setFlag (DefaultFlag.FIRE_SPREAD, null);
-    	region.setFlag (DefaultFlag.LAVA_FIRE, null);
-    	region.setFlag (DefaultFlag.LIGHTNING, null);
-    	region.setFlag (DefaultFlag.WATER_FLOW, null);
-    	region.setFlag (DefaultFlag.LAVA_FLOW, null);
-    	region.setFlag (DefaultFlag.PISTONS, null);
-    	region.setFlag (DefaultFlag.SNOW_FALL, null);
-    	region.setFlag (DefaultFlag.SNOW_MELT, null);
-    	region.setFlag (DefaultFlag.ICE_FORM, null);
-    	region.setFlag (DefaultFlag.ICE_MELT, null);
-    	region.setFlag (DefaultFlag.MUSHROOMS, null);
-    	region.setFlag (DefaultFlag.LEAF_DECAY, null);
-    	region.setFlag (DefaultFlag.GRASS_SPREAD, null);
-    	region.setFlag (DefaultFlag.MYCELIUM_SPREAD, null);
-    	region.setFlag (DefaultFlag.VINE_GROWTH, null);
-    	region.setFlag (DefaultFlag.SOIL_DRY, null);
-    	region.setFlag (DefaultFlag.ENDER_BUILD, null);
-    	region.setFlag (DefaultFlag.INVINCIBILITY, null);
-    	region.setFlag (DefaultFlag.SEND_CHAT, null);
-    	region.setFlag (DefaultFlag.RECEIVE_CHAT, null);
-    	region.setFlag (DefaultFlag.ENTRY, null);
-    	region.setFlag (DefaultFlag.EXIT, null);
-    	region.setFlag (DefaultFlag.ENDERPEARL, null);
-    	region.setFlag (DefaultFlag.ENTITY_PAINTING_DESTROY, null);
-    	region.setFlag (DefaultFlag.ENTITY_ITEM_FRAME_DESTROY, null);
-    	region.setFlag (DefaultFlag.FALL_DAMAGE, null);
-    }
-    
-    public void setSpawnAreaFlags (CommandSender sender, String regionName)
-    {
-    	ProtectedRegion region;
-    	Player player = (Player)sender;
-    	World world = player.getWorld();
-    	RegionManager regionManager = wg.getRegionManager(world);
-    	
-    	region = regionManager.getRegion(regionName);
-    	
-    	region.setFlag (DefaultFlag.BUILD, State.DENY);
-    	region.setFlag (DefaultFlag.INTERACT, State.ALLOW);
-    	region.setFlag (DefaultFlag.MOB_SPAWNING, State.DENY);
-    	region.setFlag (DefaultFlag.FALL_DAMAGE, State.DENY);
+    	if (!bSpawnArea)
+    	{
+    		region.setFlag (DefaultFlag.BUILD, null);
+    		region.setFlag(Flags.Spawn_Area, false);
+    		region.setFlag (DefaultFlag.GREET_MESSAGE, "You are now entering " + regionName + "!" );
+    		region.setFlag (DefaultFlag.FAREWELL_MESSAGE, "You are now leaving " + regionName + "!" );
+    		region.setFlag (DefaultFlag.MOB_DAMAGE, null);
+    		region.setFlag (DefaultFlag.MOB_SPAWNING, null);
+    		region.setFlag (DefaultFlag.CREEPER_EXPLOSION, null);
+    		region.setFlag (DefaultFlag.ENDERDRAGON_BLOCK_DAMAGE, null);
+    		region.setFlag (DefaultFlag.GHAST_FIREBALL, null);
+    		region.setFlag (DefaultFlag.OTHER_EXPLOSION, null);
+    		region.setFlag (DefaultFlag.FIRE_SPREAD, null);
+    		region.setFlag (DefaultFlag.LAVA_FIRE, null);
+    		region.setFlag (DefaultFlag.LIGHTNING, null);
+    		region.setFlag (DefaultFlag.WATER_FLOW, null);
+    		region.setFlag (DefaultFlag.LAVA_FLOW, null);
+    		region.setFlag (DefaultFlag.PISTONS, null);
+    		region.setFlag (DefaultFlag.SNOW_FALL, null);
+    		region.setFlag (DefaultFlag.SNOW_MELT, null);
+    		region.setFlag (DefaultFlag.ICE_FORM, null);
+    		region.setFlag (DefaultFlag.ICE_MELT, null);
+    		region.setFlag (DefaultFlag.MUSHROOMS, null);
+    		region.setFlag (DefaultFlag.LEAF_DECAY, null);
+    		region.setFlag (DefaultFlag.GRASS_SPREAD, null);
+    		region.setFlag (DefaultFlag.MYCELIUM_SPREAD, null);
+    		region.setFlag (DefaultFlag.VINE_GROWTH, null);
+    		region.setFlag (DefaultFlag.SOIL_DRY, null);
+    		region.setFlag (DefaultFlag.ENDER_BUILD, null);
+    		region.setFlag (DefaultFlag.INVINCIBILITY, null);
+    		region.setFlag (DefaultFlag.SEND_CHAT, null);
+    		region.setFlag (DefaultFlag.RECEIVE_CHAT, null);
+    		region.setFlag (DefaultFlag.ENTRY, null);
+    		region.setFlag (DefaultFlag.EXIT, null);
+    		region.setFlag (DefaultFlag.ENDERPEARL, null);
+    		region.setFlag (DefaultFlag.ENTITY_PAINTING_DESTROY, null);
+    		region.setFlag (DefaultFlag.ENTITY_ITEM_FRAME_DESTROY, null);
+    		region.setFlag (DefaultFlag.FALL_DAMAGE, null);
+    	}
+    	else if (bSpawnArea)
+    	{
+    		region.setFlag (DefaultFlag.GREET_MESSAGE, "You are now entering " + regionName + "!" );
+        	region.setFlag (DefaultFlag.FAREWELL_MESSAGE, "You are now leaving " + regionName + "!" );
+    		region.setFlag (DefaultFlag.BUILD, State.DENY);
+        	region.setFlag (DefaultFlag.INTERACT, State.ALLOW);
+        	region.setFlag (DefaultFlag.MOB_SPAWNING, State.DENY);
+        	region.setFlag (DefaultFlag.FALL_DAMAGE, State.DENY);
+        	region.setFlag(Flags.Spawn_Area, true);
+    	}
     }
     
     public boolean RegionExsists (CommandSender sender, String regionName)
@@ -191,26 +195,6 @@ public class WorldGuardHandler
     {
     	return new BlockVector(location.getX(),location.getY(),location.getZ());
 	}
-    
-    /*private void setClaimable(String regionName, boolean SpawnArea)
-    {
-    	File resFile = new File("plugins/CityWorld/Residences.yml");;
-    	
-    	YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
-  
-    	resYml.createSection("residence." + regionName + ".spawnarea");
-    
-		resYml.set("residence." + regionName + ".spawnarea", SpawnArea);
-        
-        try
-        {
-        	resYml.save("plugins/CityWorld/Residences.yml");
-        } 
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-	}*/
     
     public void create (CommandSender sender, String regionName)
     {
@@ -244,9 +228,7 @@ public class WorldGuardHandler
     	
     	regionManager.addRegion(region);
     	
-    	resetResFlags(sender,regionName);
-    	
-    	//setClaimable (regionName,bSpawnArea);
+    	resetResFlags(sender,regionName,false);
     	
     	player.sendMessage("You have created " + regionName + "!");
     }
@@ -292,8 +274,6 @@ public class WorldGuardHandler
     	BlockVector BV1;
     	BlockVector BV2;
     	
-    	//boolean bSpawnArea = true;
-    	
     	weHandler = Main.getWeHandler();
     	if (RegionExsists(sender,regionName)) return;
 
@@ -312,9 +292,7 @@ public class WorldGuardHandler
     	
     	regionManager.addRegion(region);
     	
-    	setSpawnAreaFlags(sender,regionName);
-    	
-    	//setClaimable (regionName,bSpawnArea);
+    	setDefaultResFlags(sender,regionName,true);
     	
     	player.sendMessage("You have created " + regionName + "!");
     }
@@ -326,38 +304,36 @@ public class WorldGuardHandler
     	World world = player.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
     	
-    	//File resFile = new File("plugins/CityWorld/Residences.yml");;
-    	
-    	//YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
-    	
     	if (regionName != null)
     	{    	
     		region = regionManager.getRegion(regionName);
-    	
-    		//boolean bSpawnArea = resYml.getBoolean("residence." + regionName + ".spawnarea");
     	
     		if (region == null)
     		{
     			player.sendMessage(regionName + " Doesnt exsist!");
     			return;
     		}
+    		
+    		boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
     	
     		DefaultDomain RegionOwner = region.getOwners();
     	
     		if (region.hasMembersOrOwners())
     		{
     			player.sendMessage(regionName + " is already owned!, You cannot claim this residence!");
+    			return;
     		}
-    		else if (regionName.contains("__global__"))
+    		else if (bSpawnArea)
     		{
     			player.sendMessage("You cannot claim " + regionName + " because it is a spawn area!");
+    			return;
     		}
     		else
     		{
     			RegionOwner.addPlayer(player.getName());
 
     			region.setOwners(RegionOwner);
-    			setDefaultResFlags(sender,regionName);
+    			setDefaultResFlags(sender,regionName,false);
     		
     			player.sendMessage("You are now the owner of " + regionName + "!");
     		}
@@ -369,16 +345,16 @@ public class WorldGuardHandler
     		for (Entry<String, ProtectedRegion> key : regions.entrySet())
     		{
     			region = regionManager.getRegion(key.getKey());
-    			//boolean bSpawnArea = resYml.getBoolean("residence." + key.getKey() + ".spawnarea");
+    			boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
     			
-    			if (!region.hasMembersOrOwners() /*&&  region.*/ )
+    			if (!region.hasMembersOrOwners() && !bSpawnArea)
     			{
     				DefaultDomain RegionOwner = region.getOwners();
     				
     				RegionOwner.addPlayer(player.getName());
 
         			region.setOwners(RegionOwner);
-        			setDefaultResFlags(sender,key.getKey());
+        			setDefaultResFlags(sender,key.getKey(),false);
         		
         			player.sendMessage("You are now the owner of " + key.getKey() + "!");
         			return;
@@ -387,21 +363,64 @@ public class WorldGuardHandler
     	}
     }
 	
+	@SuppressWarnings("deprecation")
 	public void reslist (CommandSender sender)
 	{
-		Player player = (Player)sender;
+		ProtectedRegion region;
+    	Player p = (Player)sender;
+    	World world = p.getWorld();
+    	RegionManager regionManager = wg.getRegionManager(world);
+    	
+    	int i;
 		
-		File resFile = new File("plugins/CityWorld/Residences.yml");
-    	
-    	YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
-    	
-    	player.sendMessage(ChatColor.RED + "List of residence's");
-    	
-    	for (String key : resYml.getConfigurationSection("residence").getKeys(false))
-   	 	{
-    		player.sendMessage(ChatColor.YELLOW + key);
-   	 	}
-    	
+		//create the book
+		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+		BookMeta bookMeta = (BookMeta) book.getItemMeta();
+		
+		//set the title and author of this book
+		bookMeta.setTitle(p.getWorld().getName().toString() + " Residence List");
+		bookMeta.setAuthor("Server");
+		
+		//create pages
+		ArrayList<String> pages = new ArrayList<String>();
+		Map<String, ProtectedRegion> regions = regionManager.getRegions();
+		
+		for (Entry<String, ProtectedRegion> key : regions.entrySet())
+		{
+			region = regionManager.getRegion(key.getKey().toString());
+			//boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
+			
+			if (region.getTypeName() != "global" || !region.getId().contains("spawn"))
+			{
+				pages.add(key.getKey().toString());
+			}
+		}
+		
+		/*for (String key : pages)
+		{
+			//add the pages to the meta
+			bookMeta.setPages(key);
+		}*/
+		
+		/*for (Object key : pages.toArray())
+		{
+			bookMeta.setPages(key.toString());
+		}*/
+		
+		//add the pages to the meta
+		bookMeta.setPages(pages.toString());
+
+		//update the ItemStack with this new meta
+		book.setItemMeta(bookMeta);
+		
+		if (p.getInventory().firstEmpty() != -1)
+		{
+			p.getInventory().addItem(book);
+		}
+		else
+		{
+			p.sendMessage("cant give you residence list book, your inventory is full!");
+		}
 	}
 	
 	public void removeAllRegions(CommandSender sender)
@@ -476,13 +495,12 @@ public class WorldGuardHandler
     	
     		DefaultDomain RegionOwner = region.getOwners();
     	
-    		//RegionOwner.toString()
     		if (RegionOwner.contains(player.getName()))
     		{
     			RegionOwner.removePlayer(player.getName());
     	
     			region.setOwners(RegionOwner);
-    			resetResFlags(sender,regionName);
+    			resetResFlags(sender,regionName,false);
     	
     			player.sendMessage("You are no longer the owner of " + regionName + "!");
     		}
@@ -505,7 +523,7 @@ public class WorldGuardHandler
     				RegionOwner.removePlayer(player.getName());
     	        	
         			region.setOwners(RegionOwner);
-        			resetResFlags(sender,key.getKey());
+        			resetResFlags(sender,key.getKey(),false);
         	
         			player.sendMessage("You are no longer the owner of " + key.getKey() + "!");
     			}

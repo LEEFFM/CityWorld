@@ -6,14 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.fallenones.cityworld.Main;
 import net.fallenones.command.CommandInterface;
 import net.fallenones.menu.IconMenu;
 
 public class ResMenuCmd implements CommandInterface
 {
-	private Main plugin = Main.getPlugin(Main.class);
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) 
 	{
@@ -29,18 +26,19 @@ public class ResMenuCmd implements CommandInterface
 		            @Override
 		            public void onOptionClick(IconMenu.OptionClickEvent event) 
 		            {
-		                event.getPlayer().sendMessage("You have chosen " + event.getName());
-		                event.setWillDestroy(true);
+		            	event.getPlayer().sendMessage("You have chosen " + event.getName());
+		                event.getPlayer().performCommand(event.getCmd());
+		                if (event.getName() != "Unclaim")
+		                {
+		                	event.setWillClose(true);
+		                	event.setWillDestroy(true);
+		                }
 		            }
-			 }, plugin);
+			 });
 			
 			resmenu.setOption(0, new ItemStack(Material.GRASS, 1), "Claim", "res claim", "Claim the next availabe residence!");
-			resmenu.setOption(1, new ItemStack(Material.ROTTEN_FLESH, 1), "Unclaim", "res unclaim", "Unclaim your residence! ");
-			resmenu.setOption(2, new ItemStack(Material.EMERALD, 1), "Money", "", "Money brings happiness");
-			
-		        //.setOption(0, new ItemStack(Material.GRASS, 1), "Claim", "res claim", "Claim the next availabe residence!")
-		        //.setOption(1, new ItemStack(Material.ROTTEN_FLESH, 1), "Unclaim", "res unclaim", "Unclaim your residence! ")
-		        //.setOption(2, new ItemStack(Material.EMERALD, 1), "Money", "", "Money brings happiness");
+			resmenu.setOption(1, new ItemStack(Material.DIRT, 1), "Unclaim", "res unclaimcp", "Unclaim your residence! ");
+			resmenu.setOption(2, new ItemStack(Material.BOOK_AND_QUILL, 1), "List", "res list", "Displays a list of residences!");
 			
 			resmenu.open(p);
 			return true;

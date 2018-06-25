@@ -4,6 +4,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.fallenones.cityworld.flags.Flags;
 import net.fallenones.command.CityWorldCommandHandler;
 import net.fallenones.command.ResidenceCommandHandler;
 import net.fallenones.commands.CityWorldCmd;
@@ -15,6 +16,7 @@ import net.fallenones.commands.RemoveAllResidencesCmd;
 import net.fallenones.commands.ResCmd;
 import net.fallenones.commands.ResListCmd;
 import net.fallenones.commands.ResMenuCmd;
+import net.fallenones.commands.ResUnclaimMenuCmd;
 import net.fallenones.commands.SetCityWorldCmd;
 import net.fallenones.commands.UnclaimCmd;
 
@@ -25,6 +27,12 @@ public class Main extends JavaPlugin implements Listener
 {
 	private static WorldGuardHandler wgHandler;
 	private static WorldEditHandler weHandler;
+	
+	@Override
+	public void onLoad()
+	{		
+		getWorldGuard().getFlagRegistry().register(Flags.Spawn_Area);
+	}
 	
 	@Override
     public void onEnable()
@@ -117,6 +125,7 @@ public class Main extends JavaPlugin implements Listener
         reshandler.register("removeallregions", new RemoveAllRegionsCmd());
         reshandler.register("removeallresidences", new RemoveAllResidencesCmd());
         reshandler.register("cp", new ResMenuCmd());
+        reshandler.register("unclaimcp", new ResUnclaimMenuCmd());
         
         getCommand("cityworld").setExecutor(cwhandler);
         getCommand("res").setExecutor(reshandler);

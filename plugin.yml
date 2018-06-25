@@ -2,7 +2,7 @@ main: net.fallenones.cityworld.Main
 name: CityWorld
 version: 1.0
 author: LEEFFM
-depends: [WorldGuard, WorldEdit]
+depend: [WorldGuard, WorldEdit]
 description: Allow claimable residences in a world setup to be a city!
 commands:
   cityworld:
