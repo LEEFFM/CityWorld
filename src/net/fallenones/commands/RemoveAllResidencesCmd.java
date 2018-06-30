@@ -20,7 +20,7 @@ public class RemoveAllResidencesCmd implements CommandInterface
 		//We don't have to check if the args length is equal to one, but you will have to check if it is greater than 1.
 		if(args.length > 1) return false;
 
-		if(p.hasPermission("cityworld.res.removeallresidences"))
+		if(p.hasPermission("cityworld.res.admin.removeallresidences"))
 		{
 			wgHandler = Main.getWgHandler();
 			wgHandler.removeAllResidences(sender);
@@ -28,7 +28,7 @@ public class RemoveAllResidencesCmd implements CommandInterface
 		}
 		else
 		{
-			p.sendMessage("You do not have the cityworld.res.removeallresidences permission!");
+			p.sendMessage("You do not have the cityworld.res.admin.removeallresidences permission!");
 			return true;
 		}
 	}

@@ -20,7 +20,7 @@ public class SetCityWorldCmd implements CommandInterface {
 		//We don't have to check if the args length is equal to one, but you will have to check if it is greater than 1.
 		if(args.length > 1) return false;
 
-		if(p.hasPermission("cityworld.res.list"))
+		if(p.hasPermission("cityworld.admin.setup"))
 		{
 			wgHandler = Main.getWgHandler();
 			wgHandler.setCityWorld(sender);
@@ -29,7 +29,7 @@ public class SetCityWorldCmd implements CommandInterface {
 		}
 		else
 		{
-			p.sendMessage("You do not have the cityworld.res.list permission!");
+			p.sendMessage("You do not have the cityworld.admin.setup permission!");
 			return true;
 		}
 		//return false;

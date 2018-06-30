@@ -2,12 +2,14 @@ package net.fallenones.cityworld;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+//import java.util.ArrayList;
+//import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -259,7 +261,10 @@ public class WorldGuardHandler
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ build -w " + player.getWorld().getName() + " deny");
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ fall-damage -w " + player.getWorld().getName() + " deny"); 
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ mob-spawning -w " + player.getWorld().getName() + " deny"); 
-		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ pvp -w " + player.getWorld().getName() + " deny"); 
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ pvp -w " + player.getWorld().getName() + " deny");
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "rg flag __global__ spawn-area -w " + player.getWorld().getName() + " false");
+		
+		player.sendMessage(player.getWorld().getName().toString() + " has been set as a city world!");
     }
     
     public void createSpawn (CommandSender sender, String regionName)
@@ -363,7 +368,15 @@ public class WorldGuardHandler
     	}
     }
 	
-	@SuppressWarnings("deprecation")
+	public String addToPage (String currentString, String stringToAdd)
+	{
+		String NewString;
+		
+		NewString = currentString + stringToAdd + "\n";
+		
+		return ChatColor.BLUE + NewString;
+	}
+	
 	public void reslist (CommandSender sender)
 	{
 		ProtectedRegion region;
@@ -371,45 +384,54 @@ public class WorldGuardHandler
     	World world = p.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
     	
-    	int i;
+    	int lines = 0;
 		
 		//create the book
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bookMeta = (BookMeta) book.getItemMeta();
 		
 		//set the title and author of this book
-		bookMeta.setTitle(p.getWorld().getName().toString() + " Residence List");
-		bookMeta.setAuthor("Server");
+		bookMeta.setTitle(ChatColor.GREEN + "Residence List");
+		bookMeta.setAuthor(ChatColor.RED + "CityWorld Plugin");
 		
 		//create pages
-		ArrayList<String> pages = new ArrayList<String>();
+		String PageContent = new String();
 		Map<String, ProtectedRegion> regions = regionManager.getRegions();
 		
 		for (Entry<String, ProtectedRegion> key : regions.entrySet())
 		{
 			region = regionManager.getRegion(key.getKey().toString());
-			//boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
+			boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
 			
-			if (region.getTypeName() != "global" || !region.getId().contains("spawn"))
+			if (!region.getId().contains("__global__") && (bSpawnArea == false))
 			{
-				pages.add(key.getKey().toString());
+				if (lines == 13)
+				{
+					bookMeta.addPage(PageContent);
+					PageContent = "";
+					
+					PageContent = addToPage(PageContent,key.getKey().toString());
+					++lines;
+				}
+				else if (lines == 26)
+				{
+					bookMeta.addPage(PageContent);
+					PageContent = "";
+					
+					PageContent = addToPage(PageContent,key.getKey().toString());
+					++lines;
+				}
+				else
+				{
+					PageContent = addToPage(PageContent,key.getKey().toString());
+					++lines;
+				}
 			}
 		}
 		
-		/*for (String key : pages)
-		{
-			//add the pages to the meta
-			bookMeta.setPages(key);
-		}*/
+		//add the page to the meta
+		bookMeta.addPage(PageContent);
 		
-		/*for (Object key : pages.toArray())
-		{
-			bookMeta.setPages(key.toString());
-		}*/
-		
-		//add the pages to the meta
-		bookMeta.setPages(pages.toString());
-
 		//update the ItemStack with this new meta
 		book.setItemMeta(bookMeta);
 		

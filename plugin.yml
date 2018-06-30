@@ -17,34 +17,49 @@ commands:
     cityworld.*:
       description: Gives access to all cityworld commands!
       children:
+        cityworld.admin.*: true
         cityworld.res.*: true
+        cityworld.res.admin.*: true
+      cityworld.setup:
+        description: Set's up neccasery worldguard settings to set current world as a city world!
+        default: op
+    cityworld.admin.*:
+      description: gives access to all cityworld admin commands!
+      children:
+        cityworld.admin.setup: true  
+      cityworld.admin.setup:
+        description: sets up current world as a city world!
+        default: op
     cityworld.res.*:
       description: gives access to all cityworld residence commands!
       children:
         cityworld.res.claim: true
         cityworld.res.unclaim: true
-        cityworld.res.create: true
         cityworld.res.list: true
-        cityworld.res.removeallregions: true
-        cityworld.res.removeallresidences: true  
         cityworld.res.cp: true      
-    cityworld.res.claim:
-      description: Claim's a unowned private residence!
-      default: op
-    cityworld.res.unclaim:
-      description: Unclaim's a private residence owned by you!
-      default: op
-    cityworld.res.create:
-      description: create's a claimable private residence!
-      default: op
-    cityworld.res.list:
-      description: shows a list of private residence's!
-      default: op
-    cityworld.res.removeallregions:
-      description: deletes all regions in a world!
-      default: op
-    cityworld.res.removeallresidences:
-      description: deletes all residences in a world!
-      default: op
-    cityworld.res.cp:
-      description: pulls up residence control panel!
+      cityworld.res.claim:
+        description: Claim's a unowned private residence!
+        default: op
+      cityworld.res.unclaim:
+        description: Unclaim's a private residence owned by you!
+        default: op
+      cityworld.res.list:
+        description: shows a list of private residence's!
+        default: op
+      cityworld.res.cp:
+        description: pulls up residence control panel!
+    cityworld.res.admin.*:
+      description: gives access to all cityworld residence admin commands!
+      children:
+        cityworld.res.admin.create: true
+        cityworld.res.admin.removeallregions: true
+        cityworld.res.admin.removeallresidences: true  
+      cityworld.res.admin.removeallregions:
+        description: deletes all regions in a world!
+        default: op
+      cityworld.res.admin.removeallresidences:
+        description: deletes all residences in a world!
+        default: op
+      cityworld.res.admin.create:
+        description: create's a claimable private residence!
+        default: op
