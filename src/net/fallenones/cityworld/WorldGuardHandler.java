@@ -2,8 +2,6 @@ package net.fallenones.cityworld;
 
 import java.io.File;
 import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -11,13 +9,10 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -30,6 +25,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import net.fallenones.book.Book;
 import net.fallenones.cityworld.flags.Flags;
 
 public class WorldGuardHandler
@@ -368,81 +364,44 @@ public class WorldGuardHandler
     	}
     }
 	
-	public String addToPage (String currentString, String stringToAdd)
-	{
-		String NewString;
-		
-		NewString = currentString + stringToAdd + "\n";
-		
-		return ChatColor.BLUE + NewString;
-	}
-	
 	public void reslist (CommandSender sender)
 	{
 		ProtectedRegion region;
+		Set<String> regions;
     	Player p = (Player)sender;
     	World world = p.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
     	
-    	int lines = 0;
-		
-		//create the book
-		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-		BookMeta bookMeta = (BookMeta) book.getItemMeta();
-		
-		//set the title and author of this book
-		bookMeta.setTitle(ChatColor.GREEN + "Residence List");
-		bookMeta.setAuthor(ChatColor.RED + "CityWorld Plugin");
-		
-		//create pages
-		String PageContent = new String();
-		Map<String, ProtectedRegion> regions = regionManager.getRegions();
-		
-		for (Entry<String, ProtectedRegion> key : regions.entrySet())
-		{
-			region = regionManager.getRegion(key.getKey().toString());
-			boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
-			
-			if (!region.getId().contains("__global__") && (bSpawnArea == false))
-			{
-				if (lines == 13)
-				{
-					bookMeta.addPage(PageContent);
-					PageContent = "";
-					
-					PageContent = addToPage(PageContent,key.getKey().toString());
-					++lines;
-				}
-				else if (lines == 26)
-				{
-					bookMeta.addPage(PageContent);
-					PageContent = "";
-					
-					PageContent = addToPage(PageContent,key.getKey().toString());
-					++lines;
-				}
-				else
-				{
-					PageContent = addToPage(PageContent,key.getKey().toString());
-					++lines;
-				}
-			}
-		}
-		
-		//add the page to the meta
-		bookMeta.addPage(PageContent);
-		
-		//update the ItemStack with this new meta
-		book.setItemMeta(bookMeta);
-		
-		if (p.getInventory().firstEmpty() != -1)
-		{
-			p.getInventory().addItem(book);
-		}
-		else
-		{
-			p.sendMessage("cant give you residence list book, your inventory is full!");
-		}
+    	// create the book
+    	Book book = new Book();
+    	
+    	// set the title and author of the book
+    	book.setTitle(ChatColor.GREEN + "Residence List");
+    	book.setAuthor(ChatColor.RED + "CityWorld Plugin");
+    	
+    	// create pages
+    	regions = regionManager.getRegions().keySet();
+    	
+    	for (Object regionName : regions.toArray())
+    	{
+    		region = regionManager.getRegion(regionName.toString());
+    		boolean bSpawnArea = region.getFlag(Flags.Spawn_Area);
+    		
+    		// ignore global region and spawn areas
+    		if (!region.getId().contains("__global__") && (bSpawnArea == false))
+    		{
+    			book.addToPage(ChatColor.BLUE + regionName.toString());
+    		}
+    	}
+    	
+    	// add page to the meta
+    	book.addPage();
+    	
+    	// add meta to book
+    	book.addInfo();
+    	
+    	//give player the book
+    	book.giveBook(p);
 	}
 	
 	public void removeAllRegions(CommandSender sender)
