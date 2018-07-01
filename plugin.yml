@@ -52,13 +52,9 @@ commands:
       description: gives access to all cityworld residence admin commands!
       children:
         cityworld.res.admin.create: true
-        cityworld.res.admin.removeallregions: true
-        cityworld.res.admin.removeallresidences: true  
+        cityworld.res.admin.removeallregions: true  
       cityworld.res.admin.removeallregions:
         description: deletes all regions in a world!
-        default: op
-      cityworld.res.admin.removeallresidences:
-        description: deletes all residences in a world!
         default: op
       cityworld.res.admin.create:
         description: create's a claimable private residence!

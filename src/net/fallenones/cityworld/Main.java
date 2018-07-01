@@ -12,7 +12,6 @@ import net.fallenones.commands.ClaimCmd;
 import net.fallenones.commands.CreateCmd;
 import net.fallenones.commands.CreateSpawnCmd;
 import net.fallenones.commands.RemoveAllRegionsCmd;
-import net.fallenones.commands.RemoveAllResidencesCmd;
 import net.fallenones.commands.ResCmd;
 import net.fallenones.commands.ResListCmd;
 import net.fallenones.commands.ResMenuCmd;
@@ -123,7 +122,6 @@ public class Main extends JavaPlugin implements Listener
         reshandler.register("createspawn", new CreateSpawnCmd());
         reshandler.register("list", new ResListCmd());
         reshandler.register("removeallregions", new RemoveAllRegionsCmd());
-        reshandler.register("removeallresidences", new RemoveAllResidencesCmd());
         reshandler.register("cp", new ResMenuCmd());
         reshandler.register("unclaimcp", new ResUnclaimMenuCmd());
         

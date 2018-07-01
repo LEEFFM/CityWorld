@@ -451,51 +451,14 @@ public class WorldGuardHandler
     	Player player = (Player)sender;
     	World world = player.getWorld();
     	RegionManager regionManager = wg.getRegionManager(world);
-    	YamlConfiguration resYml = new YamlConfiguration();
     	
     	regions = regionManager.getRegions().keySet();
     	
     	for (Object regionName : regions.toArray())
     	{
     		regionManager.removeRegion(regionName.toString());
-    		resYml.createSection("residence");
-    		try
-    		{
-				resYml.save("plugins/CityWorld/Residences.yml");
-			}
-    		catch (IOException e)
-    		{
-				e.printStackTrace();
-			}
     		player.sendMessage(regionName.toString() + " has been deleted!");
     	}
-	}
-	
-	public void removeAllResidences(CommandSender sender)
-	{
-		Player player = (Player)sender;
-		World world = player.getWorld();
-    	RegionManager regionManager = wg.getRegionManager(world);
-		
-		File resFile = new File("plugins/CityWorld/Residences.yml");
-    	
-    	YamlConfiguration resYml = YamlConfiguration.loadConfiguration(resFile);
-    	YamlConfiguration newYml = new YamlConfiguration();
-    	
-    	for (String key : resYml.getConfigurationSection("residence").getKeys(false))
-   	 	{
-    		regionManager.removeRegion(key);
-    		newYml.createSection("residence");
-    		try
-    		{
-				newYml.save("plugins/CityWorld/Residences.yml");
-			}
-    		catch (IOException e)
-    		{
-				e.printStackTrace();
-			}
-    		player.sendMessage(key.toString() + " has been deleted!");
-   	 	}
 	}
     
     public void unclaim(CommandSender sender, String regionName) 
