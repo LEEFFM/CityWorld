@@ -23,7 +23,7 @@ public class CreateSpawnCmd implements CommandInterface
 		if (args.length > 1)
 		{
 		
-			if(p.hasPermission("cityworld.res.create"))
+			if(p.hasPermission("cityworld.res.admin.create"))
 			{
 				wgHandler = Main.getWgHandler();
 				wgHandler.createSpawn(sender, args[1]);
@@ -31,7 +31,7 @@ public class CreateSpawnCmd implements CommandInterface
 			}
 			else
 			{
-				p.sendMessage("You do not have the cityworld.res.create permission!");
+				p.sendMessage("You do not have the cityworld.res.admin.create permission!");
 				return true;
 			}
 		}

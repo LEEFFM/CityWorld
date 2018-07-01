@@ -4,6 +4,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.fallenones.cityworld.flags.Flags;
 import net.fallenones.command.CityWorldCommandHandler;
 import net.fallenones.command.ResidenceCommandHandler;
 import net.fallenones.commands.CityWorldCmd;
@@ -11,9 +12,10 @@ import net.fallenones.commands.ClaimCmd;
 import net.fallenones.commands.CreateCmd;
 import net.fallenones.commands.CreateSpawnCmd;
 import net.fallenones.commands.RemoveAllRegionsCmd;
-import net.fallenones.commands.RemoveAllResidencesCmd;
 import net.fallenones.commands.ResCmd;
 import net.fallenones.commands.ResListCmd;
+import net.fallenones.commands.ResMenuCmd;
+import net.fallenones.commands.ResUnclaimMenuCmd;
 import net.fallenones.commands.SetCityWorldCmd;
 import net.fallenones.commands.UnclaimCmd;
 
@@ -24,6 +26,12 @@ public class Main extends JavaPlugin implements Listener
 {
 	private static WorldGuardHandler wgHandler;
 	private static WorldEditHandler weHandler;
+	
+	@Override
+	public void onLoad()
+	{		
+		getWorldGuard().getFlagRegistry().register(Flags.Spawn_Area);
+	}
 	
 	@Override
     public void onEnable()
@@ -107,14 +115,15 @@ public class Main extends JavaPlugin implements Listener
         //Register /cityworld [command]
         cwhandler.register("setup", new SetCityWorldCmd());
         
-        //Register /res [command]
+        //Register /residence [command]
         reshandler.register("claim", new ClaimCmd());
         reshandler.register("unclaim", new UnclaimCmd());
         reshandler.register("create", new CreateCmd());
         reshandler.register("createspawn", new CreateSpawnCmd());
         reshandler.register("list", new ResListCmd());
         reshandler.register("removeallregions", new RemoveAllRegionsCmd());
-        reshandler.register("removeallresidences", new RemoveAllResidencesCmd());
+        reshandler.register("cp", new ResMenuCmd());
+        reshandler.register("unclaimcp", new ResUnclaimMenuCmd());
         
         getCommand("cityworld").setExecutor(cwhandler);
         getCommand("res").setExecutor(reshandler);

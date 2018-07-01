@@ -35,6 +35,20 @@ public class ClaimCmd implements CommandInterface
 				return true;
 			}
 		}
+		else if (args.length <= 1)
+		{
+			if(p.hasPermission("cityworld.res.claim"))
+			{
+				wgHandler = Main.getWgHandler();
+				wgHandler.claim(sender, null);
+				return true;
+			}
+			else
+			{
+				p.sendMessage("You do not have the cityworld.res.claim permission!");
+				return true;
+			}
+		}
 		return false;
 	}
 
